@@ -8,7 +8,7 @@ export default function Card({
   className, // 외부에서 전달되는 추가 스타일 클래스
 }) {
   return (
-    <article className={twMerge("w-full theme-text", className)}>
+    <article className={twMerge("w-full text-theme", className)}>
       <Pic
         className="h-[22vw] max-2xl:h-[30vw] max-xl:h-[40vw] max-md:h-[50vw] max-sm:h-[110vw]"
         title={data.title}

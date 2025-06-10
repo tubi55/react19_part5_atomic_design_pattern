@@ -14,7 +14,7 @@ export default function Pic({
     <Link to={url} className={twMerge("block h-[20vw]", className)}>
       {shadow && (
         <img
-          className="absolute translate-x-4 translate-y-4 blur-xl saturate-150 opacity-80"
+          className="absolute translate-x-4 translate-y-4 blur-xl saturate-150 opacity-70"
           src={src}
           alt={title}
           loading="lazy"

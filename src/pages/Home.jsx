@@ -1,4 +1,5 @@
 import Card from "../components/molecules/Card";
+import ThemeToggler from "../components/molecules/ThemeToggler";
 
 export default function Home() {
   const data = {
@@ -10,7 +11,8 @@ export default function Home() {
   };
 
   return (
-    <section className="p-20">
+    <section className="w-full h-screen bg-theme p-20">
+      <ThemeToggler className="mb-10" />
       <Card data={data} />
     </section>
   );
