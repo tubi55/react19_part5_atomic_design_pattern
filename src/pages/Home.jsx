@@ -1,11 +1,9 @@
-import Rating from "../components/atoms/Rating";
+import Logo from "../components/molecules/Logo";
 
 export default function Home() {
   return (
-    <section className="p-20">
-      <Rating value={4.5} className="text-2xl" />
-      <br />
-      <Rating value={9.7} className="text-2xl text-pink-500" />
-    </section>
+    <header className="p-20">
+      <Logo title="DCODELAB" desc="UI/UX DEVELOPMENT" />
+    </header>
   );
 }
