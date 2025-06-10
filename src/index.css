@@ -1,0 +1,116 @@
+@import "tailwindcss";
+@custom-variant dark (&:where([data-theme=dark], [data-mode=dark] *));
+
+@theme {
+  --font-dongle: "Dongle", serif;
+  --font-orbitron: "Orbitron", sans-serif;
+  --font-hanna: "Black Han Sans", sans-serif;
+  --font-noto: "Noto Sans KR", serif;
+
+  --code-theme1: 0.1 0 0;
+  --code-theme2: 0.9 0.01 260;
+  --code-theme3: 0.7 0.16 240;
+
+  --color-theme1: oklch(var(--code-theme1));
+  --color-theme2: oklch(var(--code-theme2));
+  --color-theme3: oklch(var(--code-theme3));
+}
+
+/* 다크 모드 일때 덮어쓸 스타일 색상 변수 */
+[data-mode="dark"] {
+  --code-theme1: 1 0 0;
+  --code-theme2: 0.45 0.01 260;
+  --code-theme3: 0.7 0.2 350;
+}
+
+/* 테마 변수를 활용한 색상 유틸리티 */
+@utility text-theme {
+  color: oklch(var(--code-theme1));
+  transition-duration: 1s;
+  transition-property: color;
+}
+@utility text-theme-* {
+  color: oklch(var(--code-theme1) / --value([ *]));
+  transition-duration: 1s;
+  transition-property: color;
+}
+@utility bg-theme {
+  background-color: oklch(var(--code-theme2));
+  transition-duration: 1s;
+  transition-property: background-color;
+}
+@utility bg-theme-* {
+  background-color: oklch(var(--code-theme2) / --value([ *]));
+  transition-duration: 1s;
+  transition-property: background-color;
+}
+@utility text-theme-point {
+  color: var(--color-theme3);
+  transition-duration: 1s;
+  transition-property: color;
+}
+@utility bg-theme-point {
+  background-color: var(--color-theme3);
+  transition-duration: 1s;
+  transition-property: background-color;
+}
+
+/* 레이아웃 관련 유틸리티 */
+@utility inline-block {
+  position: relative;
+  display: inline-block;
+}
+@utility block {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+@utility flex-wrap {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+}
+@utility flex-between {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+@utility flex-center {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+}
+@utility fixed {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+}
+
+/* 기본 요소 유틸리티 */
+@layer base {
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+  }
+  *::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: var(--color-theme3);
+  }
+}
