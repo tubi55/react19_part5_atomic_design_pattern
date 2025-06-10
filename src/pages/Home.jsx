@@ -1,7 +1,7 @@
 export default function Home() {
   return (
-    <section>
-      <h1>Home</h1>
+    <section className="w-full h-screen overflow-y-auto">
+      <div className="h-[300vh]"></div>
     </section>
   );
 }
