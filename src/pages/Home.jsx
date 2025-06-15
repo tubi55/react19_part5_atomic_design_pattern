@@ -1,52 +1,73 @@
-import { useActionState, useOptimistic } from "react";
-import Input from "../components/atoms/Input";
-import SubmitButton from "../components/molecules/SubmitButton";
-import List from "../components/molecules/List";
+import { useEffect, useState, useDeferredValue, useTransition } from "react";
 
-// 서버액션 (실제 서버단에서 데이터 처리)
-async function savePost(formData) {
-  const serverPost = {
-    id: Date.now(), // 실제 서버 id (예시)
-    content: formData.get("post") + " (from server)",
-  };
-
-  await new Promise((res) => setTimeout(res, 2000)); // 가상 지연
-  return serverPost;
-}
+import Card from "../components/molecules/Card";
+import Spinner from "../components/atoms/Spinner";
+import FilterForm from "../components/molecules/FilterForm";
 
 export default function Home() {
-  //서버액션 실행후 반환된 값으로 최종 상태 갱신
-  const [confirmedPosts, formAction] = useActionState(async (prev, formData) => {
-    const serverPost = await savePost(formData);
-    return [serverPost, ...prev];
-  }, []);
+  const [movieData, setMovieData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState("");
+  const [filteredMovies, setFilteredMovies] = useState([]);
+  const [isPending, startTransition] = useTransition();
+  const deferredQuery = useDeferredValue(query);
+  const pageNum = 3;
 
-  //서버 액션 응답 기다리기 전 먼저 화면에 출력할 낙관적 임시 상태 생성
-  const [optPosts, addOptPosts] = useOptimistic(confirmedPosts, (prev, newPost) => [newPost, ...prev]);
+  // 페이지별 영화 데이터 호출 후 병합후 상태저장
+  useEffect(() => {
+    //페이지별 영화 데이터 fetch 함수
+    const fetchMoviesByPage = async (page) => {
+      const BASE_URL = "https://api.themoviedb.org/3/movie/popular";
+      const API_KEY = "4cf85a609f260b43cf0278ad12483b46";
+      const LANGUAGE = "ko-KR";
 
-  //기존 formAction(서버액션 트리거)에 낙관적 업데이트 기능이 추가된 트리거 함수
-  const optFormAction = (formData) => {
-    if (formData.get("post").trim() === "") return alert("메세지를 입력하세요.");
-
-    const newPost = {
-      id: Date.now(),
-      content: formData.get("post") + " (optimistic)",
+      const REQ_URL = `${BASE_URL}?api_key=${API_KEY}&language=${LANGUAGE}&page=${page}`;
+      const response = await fetch(REQ_URL);
+      const data = await response.json();
+      return data.results;
     };
 
-    addOptPosts(newPost);
-    formAction(formData);
-  };
+    //feching된 페이지별 영화 데이터 병합 함수
+    const fetchMovieData = async (num) => {
+      setLoading(true);
+
+      try {
+        const pages = await Promise.all(Array.from({ length: num }, (_, idx) => fetchMoviesByPage(idx + 1)));
+
+        setMovieData(pages.flat());
+      } catch (error) {
+        console.error("영화 데이터를 가져오는데 실패했습니다: ", error);
+      } finally {
+        setTimeout(() => setLoading(false), 500);
+      }
+    };
+
+    //pageNum갯수만큼 페이지 데이터 병합
+    fetchMovieData(pageNum);
+  }, []);
+
+  // 검색히 지연된 input값으로 영화 데이터 필터링 요청
+  // 필러팅을 통한 업데이트 상태 로직 자체의 우선 순위 낮춤
+  useEffect(() => {
+    startTransition(() => {
+      const filtered = movieData.filter((movie) => movie.title.toLowerCase().includes(deferredQuery.toLowerCase()));
+      setFilteredMovies(filtered);
+    });
+  }, [deferredQuery, movieData]);
 
   return (
-    <section className="p-20">
-      <form action={optFormAction}>
-        <Input name="post" placeholder="텍스트를 입력하세요." />
-        <SubmitButton />
-      </form>
+    <section className="p-30">
+      <div className="mb-2 text-center">
+        <FilterForm query={query} setQuery={setQuery} color="text-white" />
+      </div>
 
-      <List data={optPosts} className="mt-10 space-y-2 [&>li]:p-4  [&>li]:bg-black/5">
-        {(el) => <h2>{el.content}</h2>}
-      </List>
+      {(loading || isPending) && <Spinner />}
+
+      <div className="mt-12 grid grid-cols-5 gap-10 max-2xl:grid-cols-4 max-xl:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">
+        {filteredMovies.map((data, idx) => {
+          return <Card key={`${data.id}-${idx}`} data={data} />;
+        })}
+      </div>
     </section>
   );
 }

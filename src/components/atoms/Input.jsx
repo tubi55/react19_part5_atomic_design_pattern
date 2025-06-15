@@ -10,7 +10,7 @@ export default function Input({
   className, //추가 스타일
   required, //필수 입력 여부
   rows, //textarea용 줄 수 설정
-  disabled,
+  disabled, //disabled 값 전달
 }) {
   //기본 스타일 정의
   const inputStyle = `
@@ -38,6 +38,7 @@ export default function Input({
       placeholder={placeholder}
       required={required}
       rows={rows}
+      //disabled 연동
       disabled={disabled}
       className={twMerge(
         // input의 타입이 submit, reset, button일땐 버튼용 스타일 적용
