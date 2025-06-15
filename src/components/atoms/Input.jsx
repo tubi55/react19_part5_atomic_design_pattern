@@ -10,6 +10,7 @@ export default function Input({
   className, //추가 스타일
   required, //필수 입력 여부
   rows, //textarea용 줄 수 설정
+  disabled,
 }) {
   //기본 스타일 정의
   const inputStyle = `
@@ -17,6 +18,16 @@ export default function Input({
     text-xs font-noto text-theme3 leading-none 
     border border-transparent border-b-white/14
     outline-none resize-none placeholder:text-theme
+  `;
+
+  //버튼용 스타일
+  const btnStyle = `
+    inline-block px-6 py-2 rounded bg-theme3    
+    text-sm font-semibold text-white    
+    shadow-lg shadow-theme3/50 
+    transition-all duration-1000
+    hover:bg-black hover:shadow-black/50
+    cursor-pointer
   `;
   return (
     <Tag
@@ -27,8 +38,10 @@ export default function Input({
       placeholder={placeholder}
       required={required}
       rows={rows}
+      disabled={disabled}
       className={twMerge(
-        inputStyle,
+        // input의 타입이 submit, reset, button일땐 버튼용 스타일 적용
+        ["submit", "reset", "button"].includes(type) ? btnStyle : inputStyle,
         className,
         //일반 텍스트 입력일 경우에만 내부 그림자 추가
         type === "text" && "shadow-inner"

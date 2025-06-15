@@ -44,7 +44,9 @@ export default function Home() {
         <SubmitButton />
       </form>
 
-      <List data={optPosts}>{(el) => <h2>{el.content}</h2>}</List>
+      <List data={optPosts} className="mt-10 space-y-2 [&>li]:p-4  [&>li]:bg-black/5">
+        {(el) => <h2>{el.content}</h2>}
+      </List>
     </section>
   );
 }
