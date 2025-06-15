@@ -4,7 +4,7 @@ import Card from "../components/molecules/Card";
 import Spinner from "../components/atoms/Spinner";
 import FilterForm from "../components/molecules/FilterForm";
 
-export default function Home() {
+export default function MovieList() {
   const [movieData, setMovieData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
@@ -56,7 +56,7 @@ export default function Home() {
   }, [deferredQuery, movieData]);
 
   return (
-    <section className="p-30">
+    <div className="p-30">
       <div className="mb-2 text-center">
         <FilterForm query={query} setQuery={setQuery} color="text-white" />
       </div>
@@ -68,6 +68,6 @@ export default function Home() {
           return <Card key={`${data.id}-${idx}`} data={data} />;
         })}
       </div>
-    </section>
+    </div>
   );
 }
