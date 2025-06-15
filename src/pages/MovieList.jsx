@@ -56,7 +56,7 @@ export default function MovieList() {
   }, [deferredQuery, movieData]);
 
   return (
-    <div className="p-30">
+    <div className="px-[10vw] py-30">
       <div className="mb-2 text-center">
         <FilterForm query={query} setQuery={setQuery} color="text-white" />
       </div>
