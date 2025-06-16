@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Bg from "../components/atoms/Bg";
 import Spinner from "../components/atoms/Spinner";
+import MovieInfo from "../components/organisms/MovieInfo";
 
 export default function MovieDetail() {
   const { id } = useParams();
@@ -33,12 +34,17 @@ export default function MovieDetail() {
   }, [id]);
 
   return (
-    <div className="px-[10vw] py-30">
+    <div className="h-screen flex-between px-[10vw] pt-[17vh] pb-[4vh]">
       {movieDataById && (
         <>
           <Bg src={`https://image.tmdb.org/t/p/w1280${movieDataById.backdrop_path}`} gradient={true} />
 
           {loading && <Spinner />}
+
+          {/* 영화 기본 정보 호출 영역 */}
+          <div className="w-9/12 h-full pr-10 max-xl:w-full max-xl:h-auto max-xl:pr-0">
+            <MovieInfo movieDataById={movieDataById} />
+          </div>
         </>
       )}
     </div>
