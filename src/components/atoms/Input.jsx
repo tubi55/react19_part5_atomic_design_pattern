@@ -6,6 +6,7 @@ export default function Input({
   type = "text", //input 타입: text, radio, checkbox 등
   value, //입력값 (제어 컴포넌트 용)
   onChange, //입력 이벤트 핸들러
+  onClick, //type이 버튼일때 클릭 이벤트 핸들러
   placeholder, //입력창 안내문구
   className, //추가 스타일
   required, //필수 입력 여부
@@ -35,6 +36,7 @@ export default function Input({
       type={type}
       value={value}
       onChange={onChange}
+      onClick={onClick}
       placeholder={placeholder}
       required={required}
       rows={rows}

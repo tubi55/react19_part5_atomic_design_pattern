@@ -4,46 +4,55 @@ import SubmitButton from "../molecules/SubmitButton";
 import Text from "../atoms/Text";
 import List from "../molecules/List";
 
-export default function Review() {
-  const [ReviewText, setReviewText] = useState("");
-
-  //낙관적 업데이트 상태, 상태변경 함수 생성
-  const [optimisticReviews, updateOptimisticReviews] = useOptimistic([], (prev, newReview) => [newReview, ...prev]);
-  const optimisticUpdate = (newReview) => updateOptimisticReviews(newReview);
-
-  //낙관적 업데이트를 활용한 비동기 리뷰등록 서버 액션
-  const handleReviewSubmit = async (prevState, formData) => {
-    const newReview = {
-      id: Date.now(),
-      text: formData.get("reviewText"),
-      movieId: formData.get("movieId"),
-      date: new Date().toLocaleString(),
-    };
-
-    optimisticUpdate(newReview);
-    const newState = { reviews: [newReview, ...prevState.reviews] };
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    setReviewText("");
-    return newState;
+// 서버 액션
+async function saveReview(formData) {
+  const serverReview = {
+    id: Date.now(),
+    text: formData.get("reviewText") + " (server action)",
+    date: new Date().toLocaleString(),
   };
+
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  return serverReview;
+}
+
+export default function Review() {
+  //폼 입력값 상태 (제어 컴포넌트)
+  const [reviewText, setReviewText] = useState("");
 
   //폼 초기화 함수
   const handleReset = () => setReviewText("");
 
-  // useActionState 서버 액션 등록
-  const [state, formAction] = useActionState(handleReviewSubmit, {
-    reviews: [],
-  });
+  //서버 액션 응답 상태
+  const [confirmedReview, formAction] = useActionState(async (prev, formData) => {
+    const serverReview = await saveReview(formData);
+    return [serverReview, ...prev];
+  }, []);
 
-  //낙관적 업데이트가 적용된 화면 출력동 리뷰 데이터
-  const ReviewsToDisplay = [...optimisticReviews, ...state.reviews];
+  //낙관적 업데이트 상태생성
+  const [optReview, addOptReview] = useOptimistic(confirmedReview, (prev, newReview) => [newReview, ...prev]);
+
+  //낙관적 업데이트가 포함된 서버 액션 트리거
+  const optFormAction = (formData) => {
+    if (formData.get("reviewText").trim() === "") return alert("리뷰 내용을 작성하세요.");
+
+    handleReset();
+
+    const newReview = {
+      id: Date.now(),
+      text: formData.get("reviewText") + " (optimistic)",
+      date: new Date().toLocaleString(),
+    };
+
+    addOptReview(newReview);
+    formAction(formData);
+  };
 
   return (
     <>
       {/* 리뷰 출력 영역 */}
       <article className="w-full h-3/5 overflow-y-auto order-1 max-xl:order-2">
-        <List data={ReviewsToDisplay} className="[&>li]:py-3 [&>li]:px-5 [&>li]:mb-2">
+        <List data={optReview} className="[&>li]:py-3 [&>li]:px-5 [&>li]:mb-2">
           {(el) => (
             <>
               <Text tag="h2" className="font-bold mb-1">
@@ -61,15 +70,14 @@ export default function Review() {
           Leave a Review
         </Text>
 
-        <form action={formAction}>
+        <form action={optFormAction}>
           <Input
             tag="textarea"
             name="reviewText"
-            value={ReviewText}
+            value={reviewText}
             onChange={(e) => setReviewText(e.target.value)}
             placeholder="영화 리뷰를 작성하세요"
             rows={6}
-            required
             className="h-30 mb-2 placeholder:text-theme-[0.5]"
           />
           <SubmitButton handleReset={handleReset} />
