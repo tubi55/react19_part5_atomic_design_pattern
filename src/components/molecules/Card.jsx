@@ -13,7 +13,7 @@ export default function Card({
         className="h-[22vw] max-2xl:h-[30vw] max-xl:h-[40vw] max-md:h-[50vw] max-sm:h-[110vw]"
         title={data.title}
         url={`/${data.id}`}
-        src={`https://image.tmdb.org/t/p/w1280${data.poster_path}`}
+        src={`https://image.tmdb.org/t/p/w342${data.poster_path}`}
         shadow
         rounded
       />
