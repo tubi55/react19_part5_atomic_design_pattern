@@ -1,7 +1,8 @@
 import Text from "../atoms/Text";
+import Button from "../atoms/Button";
 import Bar from "../molecules/Bar";
 
-export default function MovieInfo({ movieDataById }) {
+export default function MovieInfo({ movieDataById, vid, setOpen }) {
   return (
     <section className="flex-wrap content-between gap-10 h-3/5 max-xl:h-auto">
       {/* 영화 타이틀 */}
@@ -26,6 +27,13 @@ export default function MovieInfo({ movieDataById }) {
         <Bar>{movieDataById.release_date.split("-").join(".")}</Bar>
         <Bar>{movieDataById.runtime}분</Bar>
         <Bar>{movieDataById.vote_average} / 10</Bar>
+
+        {/* 영화 상태 정보가 있을때만 Traile 모달 호출 버튼 생성 */}
+        {vid && (
+          <Button className="bg-black/50 shadow-black/10" onClick={() => setOpen(true)}>
+            WATCH TRAILER
+          </Button>
+        )}
       </div>
     </section>
   );
