@@ -3,7 +3,7 @@ import Bar from "../molecules/Bar";
 
 export default function MovieInfo({ movieDataById }) {
   return (
-    <section className="flex-wrap content-between gap-10 h-3/5 max-xl:h-auto border border-red-500">
+    <section className="flex-wrap content-between gap-10 h-3/5 max-xl:h-auto">
       {/* 영화 타이틀 */}
       <div className="w-full not-even:font-hanna leading-none">
         {/* 국내용 번역된 제목 */}

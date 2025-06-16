@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import Bg from "../components/atoms/Bg";
 import Spinner from "../components/atoms/Spinner";
 import MovieInfo from "../components/organisms/MovieInfo";
+import Synopsis from "../components/organisms/Synopsis";
 
 export default function MovieDetail() {
   const { id } = useParams();
@@ -44,6 +45,8 @@ export default function MovieDetail() {
           {/* 영화 기본 정보 호출 영역 */}
           <div className="w-9/12 h-full pr-10 max-xl:w-full max-xl:h-auto max-xl:pr-0">
             <MovieInfo movieDataById={movieDataById} />
+            {/* 영화 줄거리 소개 컴포넌트 */}
+            <Synopsis movieDataById={movieDataById} />
           </div>
         </>
       )}
